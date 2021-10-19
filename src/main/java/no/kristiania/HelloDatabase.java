@@ -1,5 +1,6 @@
 package no.kristiania;
 
+import no.kristiania.person.Person;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import java.sql.Connection;
@@ -21,10 +22,18 @@ public class HelloDatabase {
 
                 try (ResultSet rs = statement.executeQuery()) {
                     while (rs.next()) {
-                        System.out.println(rs.getString(2));
+                        System.out.println(rs.getString("last_name"));
                     }
                 }
             }
         }
+    }
+
+    public void save(Person person) {
+
+    }
+
+    public Person retrieve(Long id) {
+        return null;
     }
 }
