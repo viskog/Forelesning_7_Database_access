@@ -11,7 +11,6 @@ import java.sql.SQLException;
 
 public class HelloDatabase {
 
-    private Person person;
     private DataSource dataSource;
 
     public HelloDatabase(DataSource dataSource) {
@@ -40,8 +39,9 @@ public class HelloDatabase {
 
     public void save(Person person) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("insert into people (first_name) values (?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement statement = connection.prepareStatement("insert into people (first_name, last_name) values (?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, person.getFirstName());
+                statement.setString(2, person.getLastName());
                 statement.executeUpdate();
 
                 ResultSet rs = statement.getGeneratedKeys();
@@ -49,7 +49,6 @@ public class HelloDatabase {
                 person.setId(rs.getLong("id"));
             }
         }
-        this.person = person;
     }
 
     public Person retrieve(long id) throws SQLException {
@@ -61,10 +60,11 @@ public class HelloDatabase {
                 if (rs.next()) {
                     Person person = new Person();
                     person.setFirstName(rs.getString("first_name"));
+                    person.setLastName(rs.getString("last_name"));
                     return person;
                 }
             }
         }
-        return person;
+        return null;
     }
 }
