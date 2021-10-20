@@ -2,9 +2,7 @@ package no.kristiania.person;
 
 import no.kristiania.PersonDao;
 import org.junit.jupiter.api.Test;
-import org.postgresql.ds.PGSimpleDataSource;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Random;
 
@@ -12,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PersonDaoTest {
 
-    private final PersonDao dao = new PersonDao(createDataSource());
+    private final PersonDao dao = new PersonDao(PersonDao.createDataSource());
 
     @Test
     void shouldRetrieveSavedPerson() throws SQLException {
@@ -41,14 +39,6 @@ public class PersonDaoTest {
                 .extracting(Person::getId)
                 .contains(matchingPerson.getId(), anotherMatchingPerson.getId())
                 .doesNotContain(nonMatchingPerson.getId());
-    }
-
-    private DataSource createDataSource() {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/person_db");
-        dataSource.setUser("person_dbuser");
-        dataSource.setPassword("SrAwsd?s5#");
-        return dataSource;
     }
 
     private Person randomPerson() {

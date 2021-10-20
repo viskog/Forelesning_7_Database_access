@@ -28,10 +28,6 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
     @Override
     public String toString() {
         return "Person{" +
@@ -40,4 +36,9 @@ public class Person {
                 ", lastName='" + lastName + '\'' +
                 '}';
     }
+
+    public String getLastName() {
+        return lastName;
+    }
+
 }
