@@ -9,11 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class HelloDatabase {
+public class PersonDao {
 
     private DataSource dataSource;
 
-    public HelloDatabase(DataSource dataSource) {
+    public PersonDao(DataSource dataSource) {
 
         this.dataSource = dataSource;
     }
@@ -59,6 +59,7 @@ public class HelloDatabase {
 
                 if (rs.next()) {
                     Person person = new Person();
+                    person.setId(rs.getLong("id"));
                     person.setFirstName(rs.getString("first_name"));
                     person.setLastName(rs.getString("last_name"));
                     return person;

@@ -1,6 +1,6 @@
 package no.kristiania.person;
 
-import no.kristiania.HelloDatabase;
+import no.kristiania.PersonDao;
 import org.junit.jupiter.api.Test;
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -14,14 +14,13 @@ public class PersonDaoTest {
 
     @Test
     void shouldRetriveSavedPerson() throws SQLException {
-        HelloDatabase dao = new HelloDatabase(createDataSource());
+        PersonDao dao = new PersonDao(createDataSource());
 
         Person person = randomPerson();
         dao.save(person);
         assertThat(dao.retrieve(person.getId()))
-                .hasNoNullFieldsOrPropertiesExcept("id")
+                .hasNoNullFieldsOrProperties()
                 .usingRecursiveComparison()
-                .ignoringFields("id")
                 .isEqualTo(person);
     }
 
