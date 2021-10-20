@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PersonDao {
@@ -71,7 +72,26 @@ public class PersonDao {
         return null;
     }
 
-    public List<Person> listByLastName(String lastName) {
-        return null;
+    public List<Person> listByLastName(String lastName) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("select * from people where last_name = ?")) {
+
+                statement.setString(1, lastName);
+
+                try (ResultSet rs = statement.executeQuery()) {
+                    ArrayList<Person> people = new ArrayList<>();
+
+                        while (rs.next()) {
+                            Person person = new Person();
+                            person.setId(rs.getLong("id"));
+                            person.setFirstName(rs.getString("first_name"));
+                            person.setLastName(rs.getString("last_name"));
+                            people.add(person);
+                        }
+
+                        return people;
+                    }
+                }
+            }
+        }
     }
-}
