@@ -3,6 +3,7 @@ package no.kristiania;
 import no.kristiania.person.Person;
 import org.postgresql.ds.PGSimpleDataSource;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +12,12 @@ import java.sql.SQLException;
 public class HelloDatabase {
 
     private Person person;
+    private DataSource dataSource;
+
+    public HelloDatabase(DataSource dataSource) {
+
+        this.dataSource = dataSource;
+    }
 
     public static void main(String[] args) throws SQLException {
 
@@ -31,8 +38,13 @@ public class HelloDatabase {
         }
     }
 
-    public void save(Person person) {
-
+    public void save(Person person) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("insert into people (first_name) values (?)")) {
+                statement.setString(1, person.getFirstName());
+                statement.executeUpdate();
+            }
+        }
         this.person = person;
     }
 
