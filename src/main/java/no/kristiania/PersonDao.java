@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class PersonDao {
 
@@ -44,9 +45,10 @@ public class PersonDao {
                 statement.setString(2, person.getLastName());
                 statement.executeUpdate();
 
-                ResultSet rs = statement.getGeneratedKeys();
-                rs.next();
-                person.setId(rs.getLong("id"));
+                try (ResultSet rs = statement.getGeneratedKeys()) {
+                    rs.next();
+                    person.setId(rs.getLong("id"));
+                }
             }
         }
     }
@@ -66,6 +68,10 @@ public class PersonDao {
                 }
             }
         }
+        return null;
+    }
+
+    public List<Person> listByLastName(String lastName) {
         return null;
     }
 }

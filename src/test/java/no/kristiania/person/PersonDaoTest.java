@@ -12,16 +12,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PersonDaoTest {
 
-    @Test
-    void shouldRetriveSavedPerson() throws SQLException {
-        PersonDao dao = new PersonDao(createDataSource());
+    private final PersonDao dao = new PersonDao(createDataSource());
 
+    @Test
+    void shouldRetrieveSavedPerson() throws SQLException {
         Person person = randomPerson();
         dao.save(person);
         assertThat(dao.retrieve(person.getId()))
                 .hasNoNullFieldsOrProperties()
                 .usingRecursiveComparison()
                 .isEqualTo(person);
+    }
+
+    @Test
+    void shouldListPeopleByLastName() throws SQLException {
+        Person matchingPerson = randomPerson();
+        matchingPerson.setLastName("Testperson");
+        dao.save(matchingPerson);
+
+        Person anotherMatchingPerson = randomPerson();
+        anotherMatchingPerson.setLastName(matchingPerson.getLastName());
+        dao.save(anotherMatchingPerson);
+
+        Person nonMatchingPerson = randomPerson();
+        dao.save(nonMatchingPerson);
+
+        assertThat(dao.listByLastName(matchingPerson.getLastName()))
+                .extracting(Person::getId)
+                .contains(matchingPerson.getId(), anotherMatchingPerson.getId())
+                .doesNotContain(nonMatchingPerson.getId());
     }
 
     private DataSource createDataSource() {
